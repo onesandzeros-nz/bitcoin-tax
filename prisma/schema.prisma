@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionSource {
+  EASY_CRYPTO
+  LIGHTNING
+  XAPO
+  KRAKEN
+  COINCORNER
+}
+
+enum TransactionType {
+  BUY
+  SELL
+  TRANSFER
+  FEE
+  CASHBACK
+}
+
+enum ImportBatchStatus {
+  PENDING
+  SUCCESS
+  ERROR
+}
+
+model Transaction {
+  id                String              @id @default(uuid())
+  source            TransactionSource
+  transactionDate   DateTime
+  type              TransactionType
+  btcAmount         Decimal             @db.Decimal(20, 8) // Satoshi precision
+  fiatAmount        Decimal             @db.Decimal(20, 2)
+  fiatCurrency      String              @default("NZD")
+  feeAmount         Decimal?            @db.Decimal(20, 8)
+  feeCurrency       String?
+  price             Decimal             @db.Decimal(20, 2) // NZD per BTC
+  sourceReference   String?             // Original transaction ID from exchange
+  importBatchId     String?
+  rawData           Json?               // Store original CSV row for auditing
+  createdAt         DateTime            @default(now())
+
+  importBatch       ImportBatch?        @relation(fields: [importBatchId], references: [id])
+  wacCalculation    WACCalculation?
+
+  @@index([transactionDate])
+  @@index([source])
+  @@index([importBatchId])
+}
+
+model WACCalculation {
+  id                String      @id @default(uuid())
+  transactionId     String      @unique
+  calculationDate   DateTime    @default(now())
+  runningBalance    Decimal     @db.Decimal(20, 8) // BTC balance after this transaction
+  runningCost       Decimal     @db.Decimal(20, 2) // Total NZD cost basis
+  wacPrice          Decimal     @db.Decimal(20, 2) // NZD/BTC weighted average cost
+  costBasis         Decimal     @db.Decimal(20, 2) // Cost basis for this specific transaction
+  capitalGain       Decimal?    @db.Decimal(20, 2) // Gain/loss for disposal (null for acquisitions)
+  createdAt         DateTime    @default(now())
+
+  transaction       Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([calculationDate])
+}
+
+model ImportBatch {
+  id                String              @id @default(uuid())
+  source            TransactionSource
+  fileName          String
+  recordsImported   Int                 @default(0)
+  status            ImportBatchStatus   @default(PENDING)
+  errorMessage      String?             @db.Text
+  importedAt        DateTime            @default(now())
+
+  transactions      Transaction[]
+
+  @@index([importedAt])
+}
+
+model TaxYear {
+  id                  String    @id @default(uuid())
+  year                Int       @unique // e.g., 2025 for 2025/2026 tax year
+  startDate           DateTime  // e.g., 2025-04-01
+  endDate             DateTime  // e.g., 2026-03-31
+  openingBtcBalance   Decimal   @db.Decimal(20, 8) @default(0)
+  openingCostBasis    Decimal   @db.Decimal(20, 2) @default(0)
+  openingWac          Decimal   @db.Decimal(20, 2) @default(0) // Calculated: openingCostBasis / openingBtcBalance
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([year])
+}
+
+model CurrencyRate {
+  id            String    @id @default(uuid())
+  date          DateTime
+  fromCurrency  String
+  toCurrency    String
+  rate          Decimal   @db.Decimal(20, 6)
+  source        String    @default("Manual") // e.g., "XE.com", "RBNZ", "Manual"
+  createdAt     DateTime  @default(now())
+
+  @@unique([date, fromCurrency, toCurrency])
+  @@index([date])
+}
