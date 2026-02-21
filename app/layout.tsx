@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import LogoutButton from "./components/LogoutButton";
 
 export const metadata: Metadata = {
   title: "Bitcoin Tax Calculator",
@@ -24,7 +25,7 @@ export default function RootLayout({
                     Bitcoin Tax Calculator
                   </Link>
                 </div>
-                <div className="flex space-x-4">
+                <div className="flex items-center space-x-4">
                   <Link
                     href="/"
                     className="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium"
@@ -61,6 +62,8 @@ export default function RootLayout({
                   >
                     Report
                   </Link>
+                  <div className="border-l border-gray-700 h-6 mx-1"></div>
+                  <LogoutButton />
                 </div>
               </div>
             </div>
