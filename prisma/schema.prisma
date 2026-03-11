@@ -6,49 +6,32 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum TransactionSource {
-  EASY_CRYPTO
-  LIGHTNING
-  XAPO
-  KRAKEN
-  COINCORNER
-}
-
-enum TransactionType {
-  BUY
-  SELL
-  TRANSFER
-  FEE
-  CASHBACK
-}
-
-enum ImportBatchStatus {
-  PENDING
-  SUCCESS
-  ERROR
-}
+// Note: SQLite does not support enums. Enum values are stored as strings.
+// TransactionSource: EASY_CRYPTO, LIGHTNING, XAPO, KRAKEN, COINCORNER
+// TransactionType: BUY, SELL, TRANSFER, FEE, CASHBACK
+// ImportBatchStatus: PENDING, SUCCESS, ERROR
 
 model Transaction {
-  id                String              @id @default(uuid())
-  source            TransactionSource
+  id                String          @id @default(uuid())
+  source            String          // TransactionSource enum value
   transactionDate   DateTime
-  type              TransactionType
-  btcAmount         Decimal             @db.Decimal(20, 8) // Satoshi precision
-  fiatAmount        Decimal             @db.Decimal(20, 2)
-  fiatCurrency      String              @default("NZD")
-  feeAmount         Decimal?            @db.Decimal(20, 8)
+  type              String          // TransactionType enum value
+  btcAmount         Decimal         // Satoshi precision
+  fiatAmount        Decimal
+  fiatCurrency      String          @default("NZD")
+  feeAmount         Decimal?
   feeCurrency       String?
-  price             Decimal             @db.Decimal(20, 2) // NZD per BTC
-  sourceReference   String?             // Original transaction ID from exchange
+  price             Decimal         // NZD per BTC
+  sourceReference   String?         // Original transaction ID from exchange
   importBatchId     String?
-  rawData           Json?               // Store original CSV row for auditing
-  createdAt         DateTime            @default(now())
+  rawData           String?         // Store original CSV row as JSON string for auditing
+  createdAt         DateTime        @default(now())
 
-  importBatch       ImportBatch?        @relation(fields: [importBatchId], references: [id])
+  importBatch       ImportBatch?    @relation(fields: [importBatchId], references: [id])
   wacCalculation    WACCalculation?
 
   @@index([transactionDate])
@@ -60,11 +43,11 @@ model WACCalculation {
   id                String      @id @default(uuid())
   transactionId     String      @unique
   calculationDate   DateTime    @default(now())
-  runningBalance    Decimal     @db.Decimal(20, 8) // BTC balance after this transaction
-  runningCost       Decimal     @db.Decimal(20, 2) // Total NZD cost basis
-  wacPrice          Decimal     @db.Decimal(20, 2) // NZD/BTC weighted average cost
-  costBasis         Decimal     @db.Decimal(20, 2) // Cost basis for this specific transaction
-  capitalGain       Decimal?    @db.Decimal(20, 2) // Gain/loss for disposal (null for acquisitions)
+  runningBalance    Decimal     // BTC balance after this transaction
+  runningCost       Decimal     // Total NZD cost basis
+  wacPrice          Decimal     // NZD/BTC weighted average cost
+  costBasis         Decimal     // Cost basis for this specific transaction
+  capitalGain       Decimal?    // Gain/loss for disposal (null for acquisitions)
   createdAt         DateTime    @default(now())
 
   transaction       Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
@@ -73,13 +56,13 @@ model WACCalculation {
 }
 
 model ImportBatch {
-  id                String              @id @default(uuid())
-  source            TransactionSource
+  id                String          @id @default(uuid())
+  source            String          // TransactionSource enum value
   fileName          String
-  recordsImported   Int                 @default(0)
-  status            ImportBatchStatus   @default(PENDING)
-  errorMessage      String?             @db.Text
-  importedAt        DateTime            @default(now())
+  recordsImported   Int             @default(0)
+  status            String          @default("PENDING") // ImportBatchStatus enum value
+  errorMessage      String?
+  importedAt        DateTime        @default(now())
 
   transactions      Transaction[]
 
@@ -91,9 +74,9 @@ model TaxYear {
   year                Int       @unique // e.g., 2025 for 2025/2026 tax year
   startDate           DateTime  // e.g., 2025-04-01
   endDate             DateTime  // e.g., 2026-03-31
-  openingBtcBalance   Decimal   @db.Decimal(20, 8) @default(0)
-  openingCostBasis    Decimal   @db.Decimal(20, 2) @default(0)
-  openingWac          Decimal   @db.Decimal(20, 2) @default(0) // Calculated: openingCostBasis / openingBtcBalance
+  openingBtcBalance   Decimal   @default(0)
+  openingCostBasis    Decimal   @default(0)
+  openingWac          Decimal   @default(0) // Calculated: openingCostBasis / openingBtcBalance
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
@@ -105,7 +88,7 @@ model CurrencyRate {
   date          DateTime
   fromCurrency  String
   toCurrency    String
-  rate          Decimal   @db.Decimal(20, 6)
+  rate          Decimal
   source        String    @default("Manual") // e.g., "XE.com", "RBNZ", "Manual"
   createdAt     DateTime  @default(now())
 

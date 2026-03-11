@@ -1,4 +1,4 @@
-import { TransactionType, TransactionSource } from '@prisma/client';
+import { TransactionType, TransactionSource } from '../constants';
 import Decimal from 'decimal.js';
 
 export interface ParsedTransaction {
@@ -12,7 +12,7 @@ export interface ParsedTransaction {
   feeCurrency?: string;
   price: Decimal;
   sourceReference?: string;
-  rawData: any;
+  rawData: string;
 }
 
 export interface CSVParser {

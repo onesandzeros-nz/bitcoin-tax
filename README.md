@@ -16,45 +16,54 @@ This project lets you calculate your Bitcoin capital gains for tax purposes with
 
 ## Prerequisites
 
-- Node.js 18+ and npm
-- MySQL 8.0+ database
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended), **or** Node.js 18+ and npm
 - CSV export files from your exchanges
 
-## Installation
+## Quick Start with Docker (Recommended)
 
-1. **Clone and install dependencies:**
+1. **Clone the repo:**
+   ```bash
+   git clone <repo-url>
+   cd bitcoin-tax
+   ```
+
+2. **Start the app:**
+   ```bash
+   docker compose up --build
+   ```
+
+3. **Open** [http://localhost:3000](http://localhost:3000)
+
+That's it. The database is created automatically. Your data is stored in the `./data` directory and persists across restarts.
+
+To stop: `docker compose down`
+
+## Manual Setup (Node.js)
+
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. **Configure database:**
-
-   Create a MySQL database:
-   ```sql
-   CREATE DATABASE bitcoin_tax;
-   ```
-
-   Update `.env` file with your database credentials:
-   ```
-   DATABASE_URL="mysql://root:password@localhost:3306/bitcoin_tax"
+2. **Set up environment:**
+   ```bash
+   cp .env.example .env
    ```
 
 3. **Run database migrations:**
    ```bash
+   mkdir -p prisma/data
    npx prisma migrate dev --name init
    ```
 
-4. **Generate Prisma client:**
-   ```bash
-   npm run prisma:generate
-   ```
-
-5. **Start development server:**
+4. **Start development server:**
    ```bash
    npm run dev
    ```
 
    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Or use the setup script: `bash setup.sh`
 
 ## Usage Guide
 
@@ -146,8 +155,11 @@ The Weighted Average Cost method:
 - New balance = 0.4 BTC
 - New cost basis = $175,000 - $87,500 = $87,500
 
-## Database Schema
+## Database
 
+Uses SQLite (file-based, no server needed). The database file is stored at `prisma/data/bitcoin_tax.db` (or `./data/bitcoin_tax.db` when using Docker).
+
+**Schema:**
 - **Transaction**: All imported transactions
 - **WACCalculation**: Calculated WAC for each transaction
 - **TaxYear**: Tax year configuration with opening balances
@@ -179,12 +191,7 @@ Xapo and Kraken transactions are in USD and are converted to NZD using:
 1. Stored rates from `CurrencyRate` table
 2. Fallback to approximate historical averages (2025: 1.65, 2024: 1.62)
 
-**To add custom rates:**
-Use Prisma Studio or insert directly:
-```sql
-INSERT INTO CurrencyRate (id, date, fromCurrency, toCurrency, rate, source)
-VALUES (UUID(), '2025-04-01', 'USD', 'NZD', 1.65, 'RBNZ');
-```
+**To add custom rates:** Use Prisma Studio (`npx prisma studio`) to add records to the `CurrencyRate` table.
 
 ## Sample Data
 

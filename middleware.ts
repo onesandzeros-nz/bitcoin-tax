@@ -1,14 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHmac } from "crypto";
 
-function isValidToken(token: string): boolean {
+async function isValidToken(token: string): Promise<boolean> {
   const password = process.env.LOGIN_PASSWORD;
   if (!password) return true; // No password set = no protection
-  const expected = createHmac("sha256", password).update("bitcoin-tax-session").digest("hex");
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode("bitcoin-tax-session"));
+  const expected = Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
   return token === expected;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow login page and login API
@@ -18,7 +30,7 @@ export function middleware(request: NextRequest) {
 
   // Check auth cookie
   const token = request.cookies.get("auth_token")?.value;
-  if (!token || !isValidToken(token)) {
+  if (!token || !(await isValidToken(token))) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }

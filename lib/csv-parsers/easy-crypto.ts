@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import Decimal from 'decimal.js';
-import { TransactionSource, TransactionType } from '@prisma/client';
+import { TransactionSource, TransactionType } from '../constants';
 import { ParsedTransaction, CSVParser } from './types';
 
 /**
@@ -38,7 +38,7 @@ export class EasyCryptoParser implements CSVParser {
           fiatCurrency: 'NZD',
           price,
           sourceReference: record['Order ID'],
-          rawData: record,
+          rawData: JSON.stringify(record),
         });
       } catch (error) {
         console.error('Error parsing Easy Crypto record:', record, error);

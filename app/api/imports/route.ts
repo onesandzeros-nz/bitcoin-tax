@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getParser } from '@/lib/csv-parsers';
-import { TransactionSource } from '@prisma/client';
+import { TransactionSource } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {

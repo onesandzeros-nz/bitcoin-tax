@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import Decimal from 'decimal.js';
-import { TransactionSource, TransactionType } from '@prisma/client';
+import { TransactionSource, TransactionType } from '../constants';
 import { ParsedTransaction, CSVParser } from './types';
 import { getGbpToNzdRate } from '../currency-converter';
 
@@ -54,7 +54,7 @@ export class CoinCornerParser implements CSVParser {
               feeCurrency: 'NZD',
               price,
               sourceReference: txId || detail,
-              rawData: record,
+              rawData: JSON.stringify(record),
             });
           } else if (boughtMatch) {
             const btcAmount = new Decimal(boughtMatch[1]);
@@ -73,7 +73,7 @@ export class CoinCornerParser implements CSVParser {
               feeCurrency: 'NZD',
               price,
               sourceReference: txId || detail,
-              rawData: record,
+              rawData: JSON.stringify(record),
             });
           } else {
             console.warn('Unknown CoinCorner trade detail:', detail, record);
@@ -97,7 +97,7 @@ export class CoinCornerParser implements CSVParser {
             fiatCurrency: 'NZD',
             price: new Decimal(0),
             sourceReference: txId || detail,
-            rawData: record,
+            rawData: JSON.stringify(record),
           });
         } else {
           console.warn('Unknown CoinCorner type:', type, record);

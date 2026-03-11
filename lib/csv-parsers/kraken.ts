@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import Decimal from 'decimal.js';
-import { TransactionSource, TransactionType } from '@prisma/client';
+import { TransactionSource, TransactionType } from '../constants';
 import { ParsedTransaction, CSVParser } from './types';
 import { getUsdToNzdRate } from '../currency-converter';
 
@@ -62,7 +62,7 @@ export class KrakenParser implements CSVParser {
           feeCurrency: 'NZD',
           price: priceNzd,
           sourceReference: record['txid'],
-          rawData: record,
+          rawData: JSON.stringify(record),
         });
       } catch (error) {
         console.error('Error parsing Kraken record:', record, error);

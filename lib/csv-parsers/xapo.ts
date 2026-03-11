@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import Decimal from 'decimal.js';
-import { TransactionSource, TransactionType } from '@prisma/client';
+import { TransactionSource, TransactionType } from '../constants';
 import { ParsedTransaction, CSVParser } from './types';
 import { getUsdToNzdRate } from '../currency-converter';
 
@@ -89,7 +89,7 @@ export class XapoParser implements CSVParser {
           fiatCurrency: 'NZD', // Already converted
           price,
           sourceReference: record['Counterparty'] || record['Sub Description'],
-          rawData: record,
+          rawData: JSON.stringify(record),
         });
       } catch (error) {
         console.error('Error parsing Xapo record:', record, error);

@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/prisma/data
+    environment:
+      - DATABASE_URL=file:./data/bitcoin_tax.db

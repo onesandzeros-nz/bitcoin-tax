@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { TransactionType } from '@prisma/client';
+import { TransactionType } from './constants';
 
 export interface WACState {
   runningBalance: Decimal;
@@ -9,7 +9,7 @@ export interface WACState {
 
 export interface TransactionInput {
   id: string;
-  type: TransactionType;
+  type: string;
   btcAmount: Decimal;
   fiatAmount: Decimal;
   feeAmount?: Decimal | null;

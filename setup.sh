@@ -21,10 +21,16 @@ if [ ! -f .env ]; then
     echo -e "${YELLOW}Creating .env file from .env.example...${NC}"
     cp .env.example .env
     echo -e "${GREEN}✓ Created .env file${NC}"
-    echo -e "${YELLOW}⚠ Please edit .env with your database credentials${NC}"
     echo ""
 else
     echo -e "${GREEN}✓ .env file already exists${NC}"
+    echo ""
+fi
+
+# Create data directory for SQLite
+if [ ! -d "prisma/data" ]; then
+    mkdir -p prisma/data
+    echo -e "${GREEN}✓ Created prisma/data directory${NC}"
     echo ""
 fi
 
@@ -39,16 +45,6 @@ else
     echo ""
 fi
 
-# Check if MySQL is accessible
-echo "Checking database connection..."
-if command -v mysql &> /dev/null; then
-    echo -e "${GREEN}✓ MySQL client found${NC}"
-else
-    echo -e "${RED}✗ MySQL client not found${NC}"
-    echo -e "${YELLOW}Please install MySQL first${NC}"
-    echo ""
-fi
-
 # Generate Prisma Client
 echo ""
 echo "Generating Prisma Client..."
@@ -56,48 +52,15 @@ npx prisma generate
 echo -e "${GREEN}✓ Prisma Client generated${NC}"
 echo ""
 
-# Ask about database migration
+# Run database migration
 echo "=========================================="
-echo "Database Migration"
-echo "=========================================="
-echo ""
-echo "Before running migrations, ensure:"
-echo "1. MySQL is running"
-echo "2. Database 'bitcoin_tax' is created"
-echo "3. .env file has correct DATABASE_URL"
-echo ""
-read -p "Do you want to run database migrations now? (y/n) " -n 1 -r
-echo ""
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo ""
-    echo "Running database migrations..."
-    npx prisma migrate dev --name initial_setup
-    echo -e "${GREEN}✓ Database migrations completed${NC}"
-    echo ""
-else
-    echo -e "${YELLOW}Skipping migrations. Run 'npx prisma migrate dev' when ready.${NC}"
-    echo ""
-fi
-
-# Build check
-echo "=========================================="
-echo "Build Check"
+echo "Database Setup (SQLite)"
 echo "=========================================="
 echo ""
-read -p "Do you want to test the build now? (y/n) " -n 1 -r
+echo "Running database migrations..."
+npx prisma migrate dev --name init
+echo -e "${GREEN}✓ Database created and migrations applied${NC}"
 echo ""
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo ""
-    echo "Building application..."
-    npm run build
-    echo -e "${GREEN}✓ Build successful${NC}"
-    echo ""
-else
-    echo -e "${YELLOW}Skipping build check. Run 'npm run build' to verify later.${NC}"
-    echo ""
-fi
 
 # Summary
 echo "=========================================="
@@ -105,19 +68,12 @@ echo "Setup Complete!"
 echo "=========================================="
 echo ""
 echo "Next steps:"
-echo "1. Ensure .env has correct database credentials"
-echo "2. Start development server: npm run dev"
-echo "3. Open http://localhost:3000"
-echo "4. Create a tax year"
-echo "5. Import your CSV files"
-echo "6. Calculate WAC"
-echo "7. Generate tax report"
+echo "1. Start development server: npm run dev"
+echo "2. Open http://localhost:3000"
+echo "3. Create a tax year"
+echo "4. Import your CSV files"
+echo "5. Calculate WAC"
+echo "6. Generate tax report"
 echo ""
-echo "Documentation:"
-echo "- README.md - Overview and features"
-echo "- SETUP.md - Detailed setup guide"
-echo "- DATABASE_SETUP.md - Database configuration"
-echo "- IMPLEMENTATION_SUMMARY.md - Complete feature list"
-echo ""
-echo -e "${GREEN}Happy tax calculating! 🎉${NC}"
+echo -e "${GREEN}Happy tax calculating!${NC}"
 echo ""

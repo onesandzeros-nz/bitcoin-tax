@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import Decimal from 'decimal.js';
-import { TransactionSource, TransactionType } from '@prisma/client';
+import { TransactionSource, TransactionType } from '../constants';
 import { ParsedTransaction, CSVParser } from './types';
 
 /**
@@ -71,7 +71,7 @@ export class LightningParser implements CSVParser {
           feeCurrency,
           price,
           sourceReference: record['TxHash'],
-          rawData: record,
+          rawData: JSON.stringify(record),
         });
       } catch (error) {
         console.error('Error parsing Lightning record:', record, error);

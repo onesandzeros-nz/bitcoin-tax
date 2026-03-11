@@ -1,4 +1,4 @@
-import { TransactionSource } from '@prisma/client';
+import { TransactionSource } from '../constants';
 import { EasyCryptoParser } from './easy-crypto';
 import { LightningParser } from './lightning';
 import { XapoParser } from './xapo';
