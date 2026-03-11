@@ -2,6 +2,10 @@
 
 A Next.js application for calculating Bitcoin capital gains/losses using the Weighted Average Cost (WAC) method for New Zealand IRD tax reporting.
 
+## Motivation
+
+This project lets you calculate your Bitcoin capital gains for tax purposes without revealing to your accountant how much Bitcoin you hold, have held, or what specific transactions you've made. You run the calculations yourself and provide only the final tax-relevant figures — total capital gains/losses, opening and closing cost bases — keeping your full transaction history and balances private.
+
 ## Features
 
 - **Multi-source CSV import**: Easy Crypto, Lightning Pay, Xapo, Kraken
