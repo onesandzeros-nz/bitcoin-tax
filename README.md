@@ -36,22 +36,20 @@ Once Docker Desktop is running (whale icon visible), open a terminal (Terminal o
    cd bitcoin-tax
    ```
 
-2. **Set your password:**
-
-   Copy `.env.example` to `.env` and change the `LOGIN_PASSWORD`:
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and set `LOGIN_PASSWORD` to something secure.
-
-3. **Start the app:**
+2. **Start the app:**
    ```bash
    docker compose up --build
    ```
 
-4. **Open** [http://localhost:3123](http://localhost:3123)
+3. **Open** [http://localhost:3123](http://localhost:3123)
 
-That's it. The database is created automatically. Your data is stored in the `./data` directory and persists across restarts.
+   A random login password is printed in the terminal on startup. To set your own, create a `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and change `LOGIN_PASSWORD`, then restart with `docker compose up`.
+
+The database is created automatically. Your data is stored in the `./data` directory and persists across restarts.
 
 To stop: press `Ctrl+C` in the terminal, or run `docker compose down`
 
