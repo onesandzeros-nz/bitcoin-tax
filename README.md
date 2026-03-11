@@ -16,7 +16,7 @@ This project lets you calculate your Bitcoin capital gains for tax purposes with
 
 ## Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended), **or** Node.js 18+ and npm
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended), **or** Node.js 20+ and npm
 - CSV export files from your exchanges
 
 ## Quick Start with Docker (Recommended)
@@ -49,7 +49,7 @@ Once Docker Desktop is running (whale icon visible), open a terminal (Terminal o
    docker compose up --build
    ```
 
-4. **Open** [http://localhost:3000](http://localhost:3000)
+4. **Open** [http://localhost:3123](http://localhost:3123)
 
 That's it. The database is created automatically. Your data is stored in the `./data` directory and persists across restarts.
 
@@ -78,7 +78,7 @@ To stop: press `Ctrl+C` in the terminal, or run `docker compose down`
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+   Open [http://localhost:3123](http://localhost:3123) in your browser.
 
 Or use the setup script: `bash setup.sh`
 

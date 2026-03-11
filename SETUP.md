@@ -5,7 +5,7 @@
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 2. Clone this repo
 3. Run `docker compose up --build`
-4. Open [http://localhost:3000](http://localhost:3000)
+4. Open [http://localhost:3123](http://localhost:3123)
 
 Data persists in the `./data` directory.
 
@@ -38,7 +38,7 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3123](http://localhost:3123)
 
 ## Initial Setup in UI
 
