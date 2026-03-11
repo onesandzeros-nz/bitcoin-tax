@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import LogoutButton from "./components/LogoutButton";
+import AuthGuard from "./components/AuthGuard";
 
 export const metadata: Metadata = {
   title: "Bitcoin Tax Calculator",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <AuthGuard>
         <div className="min-h-screen flex flex-col">
           <nav className="bg-gray-950 text-white shadow-lg border-b border-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,6 +81,7 @@ export default function RootLayout({
             </div>
           </footer>
         </div>
+        </AuthGuard>
       </body>
     </html>
   );
