@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# Ensure data directory exists and is writable by nextjs user
+mkdir -p /app/prisma/data
+chown -R nextjs:nodejs /app/prisma/data
+
 # Generate a random password if not set or left as default
 if [ -z "$LOGIN_PASSWORD" ] || [ "$LOGIN_PASSWORD" = "ChangeThisPassword" ]; then
   LOGIN_PASSWORD=$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n' | head -c 16)
@@ -16,8 +20,8 @@ if [ -z "$LOGIN_PASSWORD" ] || [ "$LOGIN_PASSWORD" = "ChangeThisPassword" ]; the
 fi
 
 echo "Running database migrations..."
-node ./node_modules/prisma/build/index.js migrate deploy
+su-exec nextjs node ./node_modules/prisma/build/index.js migrate deploy
 
 echo ""
 echo "Starting application..."
-exec node server.js
+exec su-exec nextjs node server.js

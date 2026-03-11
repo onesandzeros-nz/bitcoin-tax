@@ -18,7 +18,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl su-exec
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -33,8 +33,6 @@ COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
 
 RUN mkdir -p /app/prisma/data && chown -R nextjs:nodejs /app/prisma /app/node_modules/.prisma /app/node_modules/@prisma /app/node_modules/prisma
 RUN chmod +x /app/docker-entrypoint.sh
-
-USER nextjs
 
 EXPOSE 3123
 
