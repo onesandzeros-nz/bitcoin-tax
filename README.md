@@ -4,7 +4,7 @@ A Next.js application for calculating Bitcoin capital gains/losses using the Wei
 
 ## Motivation
 
-This project lets you calculate your Bitcoin capital gains for tax purposes without revealing to your accountant how much Bitcoin you hold, have held, or what specific transactions you've made. You run the calculations yourself and provide only the final tax-relevant figures — total capital gains/losses, opening and closing cost bases — keeping your full transaction history and balances private.
+This project lets you calculate your Bitcoin capital gains for tax purposes without revealing to your accountant how much Bitcoin you hold, have held, or what specific transactions you've made. You run the calculations yourself and provide only the final tax-relevant figures — total capital gains/losses — keeping your full transaction history and balances private.
 
 ## Features
 
