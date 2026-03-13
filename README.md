@@ -19,7 +19,15 @@ This project lets you calculate your Bitcoin capital gains for tax purposes with
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended), **or** Node.js 20+ and npm
 - CSV export files from your exchanges
 
-## Quick Start with Docker (Recommended)
+# Installation Options
+1. Run on umbrel
+2. Run locally with docker
+3. Run from code
+
+## One-click install on Umbrel (easiest)
+Head over to [Umbrel Install Instructions](https://github.com/onesandzeros-nz/onesandzeros-umbrel)
+
+## Run locally with Docker (medium difficulty)
 
 ### Install Docker Desktop
 
@@ -28,7 +36,7 @@ This project lets you calculate your Bitcoin capital gains for tax purposes with
 
 Once Docker Desktop is running (whale icon visible), open a terminal (Terminal on Mac, PowerShell on Windows) and continue:
 
-### Run the app
+### Run the app from code (hardest)
 
 1. **Clone the repo:**
    ```bash
