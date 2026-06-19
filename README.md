@@ -4,7 +4,7 @@ A Next.js application for calculating Bitcoin capital gains/losses using the Wei
 
 ## Motivation
 
-This project is not tax advice, but can help you calculate your Bitcoin capital gains for tax purposes
+This project is not tax advice, but can help you calculate your Bitcoin capital gains for tax purposes. Currently only works for simple cases of buying and selling bitcoin. Please confirm all workings with an accountant.
 
 ## Features
 
